@@ -53,7 +53,7 @@
     "runArgs": [
         "--ipc=host",
         "--gpus=all",
-        // "--env-file=.devcontainer/.env"
+        "--env-file=.devcontainer/.env"
     ],
     "postCreateCommand": "pip install -e .[dev]",
 }
