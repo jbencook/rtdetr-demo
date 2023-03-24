@@ -31,3 +31,5 @@ class Config:
     # Hyperparameters
     batch_size: int = 4
     learning_rate: float = 1e-3
+    max_epochs: int = 10
+    num_workers: int = 4

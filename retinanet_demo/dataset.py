@@ -10,6 +10,7 @@ from sparrow_datums import FrameAugmentedBoxes
 from torchvision.transforms import ToTensor
 
 from .config import Config
+from .utils import Holdout, in_holdout
 
 
 def version_images(task_id: int) -> None:
@@ -33,20 +34,26 @@ def version_annotations(task_id: int) -> None:
 class Dataset(torch.utils.data.Dataset):
     """Dataset class for retinanet-demo."""
 
-    def __init__(self) -> None:
+    def __init__(self, holdout: Holdout) -> None:
         """Initialize the dataset."""
-        self.images = sorted(Config.images_directory.glob("*.jpg"))
-        self.annotations = sorted(Config.annotations_directory.glob("*.json.gz"))
+        self.slugs = []
+        for image_path in Config.images_directory.glob("*.jpg"):
+            slug = image_path.stem
+            if in_holdout(slug, holdout):
+                self.slugs.append(slug)
         self.transform = ToTensor()
 
     def __len__(self) -> int:
         """Return the length of the dataset."""
-        return len(self.images)
+        return len(self.slugs)
 
     def __getitem__(self, index: int) -> torch.Tensor:
         """Return an item from the dataset."""
-        image = Image.open(self.images[index])
-        boxes = FrameAugmentedBoxes.from_file(self.annotations[index])
+        slug = self.slugs[index]
+        image = Image.open(Config.images_directory / f"{slug}.jpg")
+        boxes = FrameAugmentedBoxes.from_file(
+            Config.annotations_directory / f"{slug}.json.gz"
+        )
         boxes = boxes.to_absolute().to_tlbr()
         return {
             "image": self.transform(image),
