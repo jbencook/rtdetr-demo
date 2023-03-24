@@ -3,10 +3,16 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import datumaro as dm
-from sparrow_cvat import download_annotations
+from sparrow_cvat import download_annotations, download_images
 from sparrow_datums import FrameAugmentedBoxes
 
 from .config import Config
+
+
+def version_images(task_id: int) -> None:
+    """Download the CVAT images."""
+    download_images(task_id, Config.images_directory)
+    print(f"Version images: dvc add {Config.images_directory}")
 
 
 def version_annotations(task_id: int) -> None:
