@@ -1,4 +1,5 @@
 """Train the model."""
+import json
 from collections import OrderedDict
 from pathlib import Path
 from typing import Union
@@ -90,12 +91,14 @@ class Lightning(pl.LightningModule):
         log_metrics = OrderedDict()
         for k, v in metrics.items():
             if len(v.shape) == 0:
-                log_metrics[k] = v
+                log_metrics[k] = float(v)
             else:
                 for i, score in enumerate(v):
                     class_label = Config.labels[i]
-                    log_metrics[f"map_{class_label}"] = score
+                    log_metrics[f"map_{class_label}"] = float(score)
         self.log_dict(log_metrics)
+        with open(Config.metrics_path, "w") as f:
+            f.write(json.dumps(log_metrics))
 
     def configure_optimizers(self):
         """Configure the optimizers."""

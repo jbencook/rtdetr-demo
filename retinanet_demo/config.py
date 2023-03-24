@@ -18,6 +18,9 @@ class Config:
     models_directory: Path = data_directory / "models"
     model_path: Path = models_directory / "model.pt"
 
+    # Metrics Path
+    metrics_path: Path = data_directory / "metrics.json"
+
     labels: tuple[str, ...] = (
         "bicycle",
         "bird",
