@@ -5,7 +5,6 @@ from .dataset import version_annotations, version_images
 from .evaluate import evaluate_model
 from .train import save_checkpoint, train_model
 
-
 def main() -> None:
     """Call CLI commands."""
     fire.Fire(
