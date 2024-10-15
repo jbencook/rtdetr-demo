@@ -4,18 +4,12 @@ PYTHON := python
 PYTHONPATH := `pwd`
 
 #* Docker variables
-IMAGE := retinanet-demo
+IMAGE := rtdetr-demo
 VERSION := latest
 
 .PHONY: test
 test:
-	pytest --cov=retinanet_demo retinanet_demo/
-
-.PHONY: check-codestyle
-check-codestyle:
-	isort --diff --check-only retinanet_demo
-	black --diff --check retinanet_demo
-	pylint retinanet_demo
+	pytest --cov=rtdetr_demo rtdetr_demo/
 
 #* Docker
 # Example: make docker-build VERSION=latest

@@ -1,1 +1,1 @@
-# retinanet-demo
+# rtdetr-demo

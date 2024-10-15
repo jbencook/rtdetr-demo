@@ -1,10 +1,8 @@
-FROM nvidia/cuda:11.3.1-cudnn8-runtime-ubuntu20.04
+FROM python:3.9
 
 ARG USER=dev
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
-
-RUN apt-key adv --fetch-keys https://developer.download.nvidia.cn/compute/cuda/repos/ubuntu2004/x86_64/3bf863cc.pub
 
 RUN apt update -y && apt install -y sudo
 RUN groupadd --gid $USER_GID $USER && \
@@ -26,26 +24,6 @@ RUN apt install -y \
     curl \
     git
 
-# GPU Setup
-RUN apt-get install -y \
-    libcairo2-dev \
-    libgl1-mesa-glx \
-    software-properties-common
-
-# Install Python 3.9
-RUN add-apt-repository ppa:deadsnakes/ppa
-RUN apt install -y python3.9-dev python3.9-venv
-RUN python3.9 -m ensurepip
-RUN ln -s /usr/bin/python3.9 /usr/local/bin/python
-RUN ln -s /usr/local/bin/pip3.9 /usr/local/bin/pip
-RUN pip install --upgrade pip
-
-# Allow root for Jupyter notebooks
-RUN mkdir /root/.jupyter
-RUN echo "c.NotebookApp.allow_root = True" > /root/.jupyter/jupyter_notebook_config.py
-
-ENV PIP_EXTRA_INDEX_URL https://download.pytorch.org/whl/cu113
-
 RUN mkdir -p /code
 RUN chown -R ${USER} /code
 WORKDIR /code
@@ -53,8 +31,8 @@ WORKDIR /code
 USER ${USER}
 ENV PATH "${PATH}:/home/${USER}/.local/bin"
 
-RUN mkdir retinanet_demo && \
-  touch retinanet_demo/__init__.py
+RUN mkdir rtdetr_demo && \
+  touch rtdetr_demo/__init__.py
 COPY setup.cfg .
 COPY setup.py .
 RUN pip install -U pip
